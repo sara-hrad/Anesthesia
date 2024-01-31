@@ -1,0 +1,3 @@
+Here, an LSTM model is trained for time-series simulation of anesthesia. The goal is to combine this LSTM model with a DNN in order to create a generalized simulation of anesthesia using the data of 45 patients provided in pd_model_dataset. These pd models are identified for another purpose in the previously published [paper](10.1007/s10877-023-01083-5).
+
+The module_simulation uses the [Eleveld PK model](10.1016/j.bja.2018.01.018).
