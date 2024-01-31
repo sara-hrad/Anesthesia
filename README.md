@@ -1,7 +1,7 @@
 # Anesthesia
 This repository is dedicated to my research projects on anesthesia.
 
-The anesthesia_modeling folder includes time-series simulation and an LSTM modeling of time series simulation.
+The modeling folder includes time-series simulation and an LSTM modeling of time series simulation.
 
 The RL folder is dedicated to implementation of RL algorithm on anesthesia (SISO and MIMO).
 
@@ -19,4 +19,4 @@ This is an implementation of the paper: [Continuous action deep reinforcement le
 The test run of one episode of anesthesia is shown in following figure.
 ![Test run of anesthesia](test_run.png)
 
-Depth of hypnoisi (DoH) should be between 0.45 and 0.55. The infusion rate is considerd as the action of the RL agent.
+Depth of hypnosis (DoH) rises from zero and should be maintained between 0.45 and 0.55. The infusion rate is considerd as the action of the RL agent.
