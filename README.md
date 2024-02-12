@@ -20,3 +20,6 @@ The test run of one episode of anesthesia is shown in following figure.
 ![Test run of anesthesia](test_run.png)
 
 Depth of hypnosis (DoH) rises from zero and should be maintained between 0.45 and 0.55. The infusion rate is considerd as the action of the RL agent.
+
+The following agent shows the examplary performance of the trained RL agent on anesthesia.
+![Test run of anesthesia](RL_agent_best.png)
