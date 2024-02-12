@@ -1,8 +1,8 @@
-import numpy as np
-import gym
-from gym import spaces
 import control as ct
+import gym
+import numpy as np
 from control.matlab import *
+from gym import spaces
 from matplotlib import pyplot as plt
 
 
@@ -53,7 +53,6 @@ class AnestheisaEnv(gym.Env):
         sys = ct.tf(num, den)
         time_delay_pad_app = ct.tf(ct.pade(t_d)[0], ct.pade(t_d)[1])
         pd_lin_sys = ct.series(sys, time_delay_pad_app)
-        # pd_lin_sys = sys
         return pd_lin_sys
 
     def pd_model_hillfunction(self, ce):
@@ -71,20 +70,16 @@ class AnestheisaEnv(gym.Env):
         # Update the state based on the action
         pk_pd_lin = ct.series(self.pk_model(), self.pd_linear_model())
 
-        # print(pk_pd_lin)
         yout, tout, xout = lsim(pk_pd_lin,
                                 U=action*np.ones(self.t_s+1),
                                 T=np.linspace(0, self.t_s, self.t_s+1),
                                 X0=self.concentrations)
         self.concentrations = xout[-1]
-        # print(self.concentrations)
-        # self.state[0:3] = np.array(yout)
         self.state = np.array(self.pd_model_hillfunction(yout[-1]))
         self.state = (100-self.state)/100
         self.state = np.clip(self.state, self.observation_space.low[0], self.observation_space.high[0])
 
         # Define the reward function (example: reward is higher when state is closer to 1)
-        # reward = np.exp(-abs(self.state - 1))
         reward = 0.5 - np.abs(self.state-0.5) - 0.2*action - 0.2*np.max([0, self.state - 0.5])
         epsilon = 0.05
         # Check if the episode is done
@@ -92,10 +87,7 @@ class AnestheisaEnv(gym.Env):
             done = True
         else:
             done = False
-
-        # reward = int(done)
-
-        return self.state, reward, done
+        return np.array([self.state]), np.array(reward), done
 
     def reset(self):
         # Reset the environment to a random initial state
@@ -103,7 +95,13 @@ class AnestheisaEnv(gym.Env):
         self.concentrations = np.zeros((5,), dtype=np.float32)
         return self.state
 
+    def render(self, mode='human'):
+        # Implement rendering here if needed
+        pass
 
+    def close(self):
+        # Implement any cleanup code here if needed
+        pass
 
 
 def main():
@@ -117,23 +115,18 @@ def main():
     obs = env.reset()
     # print(type(obs))
     doh_arr = []
-    infusion_arr=[]
+    infusion_arr = []
 
     for i in range(t_f):
         if i < 20:
             action = 0.6
-            # action = env.action_space.high[0]
         else:
             action = 0.23
-
-        # action = env.action_space.high[0]
-        # action = env.action_space.sample()[0]  # Sample a random action
-        # print(action)
         obs, reward, done = env.step(action)
         doh_arr.append(obs)
         infusion_arr.append(action)
         print(f"State: {obs}, Reward: {reward}, Done: {done}, Action:{action}")
-
+    print(type(doh_arr))
     figure, axis = plt.subplots(2)
     axis[0].plot(range(t_f), infusion_arr)
     axis[0].set_xlim(0, t_f)
@@ -142,7 +135,6 @@ def main():
 
     axis[1].plot(range(t_f), doh_arr)
     axis[1].axhspan(0.45, 0.55, color='green', alpha=0.75, lw=0)
-    # axis[1].plot(range(t_f), 45 * np.ones((t_f,)))
     axis[1].set_xlim(0, t_f)
     axis[1].set_ylabel("DoH (0 - 1)")
     axis[1].set_xlabel("Time (seconds)")
